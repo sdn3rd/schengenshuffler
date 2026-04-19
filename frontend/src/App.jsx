@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Bolt } from './DiceLogo';
 import Dashboard from './Dashboard';
 import LavaLamp from './LavaLamp';
@@ -42,12 +42,8 @@ export default function App() {
 
       <header className="header">
         <div className="header-left">
-          <span className="app-title">
-            <Bolt size={15} className="title-bolt" />
-            <span className="title-seg">chengen</span>
-            <Bolt size={15} className="title-bolt" />
-            <span className="title-seg">huffler</span>
-          </span>
+          <Bolt size={16} className="title-bolt" />
+          <span className="app-title">SchenGen</span>
         </div>
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
@@ -57,11 +53,8 @@ export default function App() {
       <main className="main">
         {!result && (
           <section className="hero">
-            <h1 className="hero-title">Know your Schengen days</h1>
-            <p className="subtitle">
-              Upload your Google Maps Timeline export to see every day you've
-              spent in the Schengen Area over the past 180 days.
-            </p>
+            <h1 className="hero-title">SchenGen</h1>
+            <p className="catchphrase">Know your count.</p>
 
             <div
               className={`dropzone${dragging ? ' dragging' : ''}`}
@@ -74,7 +67,7 @@ export default function App() {
               <div>
                 <p className="dropzone-text">Drop your <strong>Timeline JSON</strong> here or click to browse</p>
                 <p className="dropzone-hint">
-                  On Android: Google Maps → profile photo → Your Timeline → ⋮ → Export timeline data
+                  Google Maps → profile photo → Your Timeline → ⋮ → Export timeline data
                 </p>
               </div>
               <input

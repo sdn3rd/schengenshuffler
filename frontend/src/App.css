@@ -29,9 +29,6 @@
 }
 
 .app-title {
-  display: inline-flex;
-  align-items: center;
-  gap: 1px;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.3px;
@@ -40,9 +37,8 @@
 .title-bolt {
   color: var(--text2);
   flex-shrink: 0;
-  margin: 0 1px;
+  margin-right: 7px;
 }
-.title-seg { line-height: 1; }
 
 .theme-toggle {
   background: var(--surface2);
@@ -77,17 +73,20 @@
 }
 
 .hero-title {
-  font-size: 44px;
+  font-size: 64px;
   font-weight: 800;
-  letter-spacing: -1.5px;
+  letter-spacing: -2px;
   color: var(--text2);
+  line-height: 1;
 }
 
-.subtitle {
+.catchphrase {
+  font-size: 18px;
+  font-weight: 400;
   color: var(--text2);
-  max-width: 500px;
-  font-size: 15px;
-  line-height: 1.65;
+  letter-spacing: 0.01em;
+  opacity: 0.75;
+  margin-top: -4px;
 }
 
 .dropzone {
