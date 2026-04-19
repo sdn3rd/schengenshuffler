@@ -41,17 +41,17 @@
 }
 
 .theme-toggle {
-  background: var(--surface2);
-  border: 1px solid var(--border);
+  background: var(--accent);
+  border: 1px solid var(--accent2);
   border-radius: 8px;
   padding: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text2);
+  color: #fff;
   transition: background 0.2s, color 0.2s;
 }
-.theme-toggle:hover { background: var(--border); color: var(--text); }
+.theme-toggle:hover { background: var(--accent2); }
 
 .main {
   flex: 1;
