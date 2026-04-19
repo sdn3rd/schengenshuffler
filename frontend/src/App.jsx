@@ -101,6 +101,14 @@ export default function App() {
           />
         )}
       </main>
+
+      <footer className="app-footer">
+        <span>Schengenerator</span>
+        <span className="footer-sep">·</span>
+        <a href="https://github.com/sdn3rd/schengenshuffler" target="_blank" rel="noopener noreferrer">GitHub</a>
+        <span className="footer-sep">·</span>
+        <span>v{__APP_VERSION__}</span>
+      </footer>
     </div>
   );
 }

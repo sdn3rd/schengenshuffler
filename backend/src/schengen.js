@@ -55,11 +55,6 @@ export function coordToCountry(lat, lon) {
   return null;
 }
 
-function toDateStr(ms) {
-  const d = new Date(ms);
-  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
-}
-
 // Handles "lat°, lon°" strings (new export) and plain "lat, lon"
 function parseLatLng(str) {
   if (!str) return [NaN, NaN];
@@ -75,9 +70,22 @@ function parseMs(val) {
   return isNaN(n) ? new Date(val).getTime() : n;
 }
 
+// Activity types that represent aerial transit — GPS traces these routes
+// through countries the traveller never actually entered on the ground.
+const SKIP_ACTIVITY_TYPES = new Set([
+  'FLYING', 'IN_FERRY',
+]);
+
+function toDateStr(ms) {
+  const d = new Date(ms);
+  return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
+}
+
 export function parseTimelineJson(raw) {
   const now = Date.now();
-  const cutoff = now - 180 * 24 * 60 * 60 * 1000;
+  // Parse 2 years so the UI slider can explore any 180-day window within that range.
+  const cutoff = now - 730 * 24 * 60 * 60 * 1000;
+  const DAY = 24 * 60 * 60 * 1000;
 
   const dayCountryMap = {};
   function recordDay(dateStr, countryCode) {
@@ -85,17 +93,17 @@ export function parseTimelineJson(raw) {
     dayCountryMap[dateStr].add(countryCode);
   }
 
+  // Iterates by UTC midnight boundaries — no floating cursor drift.
   function markDaysInRange(startMs, endMs, country) {
-    const start = Math.max(startMs, cutoff);
-    let cursor = start;
-    while (cursor <= endMs) {
-      recordDay(toDateStr(cursor), country);
-      cursor += 24 * 60 * 60 * 1000;
+    const startMidnight = startMs - (startMs % DAY);
+    const endMidnight = endMs - (endMs % DAY);
+    const from = Math.max(startMidnight, cutoff - (cutoff % DAY));
+    for (let d = from; d <= endMidnight; d += DAY) {
+      recordDay(toDateStr(d), country);
     }
-    recordDay(toDateStr(endMs), country);
   }
 
-  // Old-format placeVisit: { location: { latitudeE7, longitudeE7 }, duration: { startTimestampMs, endTimestampMs } }
+  // Old-format placeVisit: { location: { latitudeE7, longitudeE7 }, duration: {...} }
   function processPlaceVisit(obj) {
     const loc = obj.location;
     if (!loc) return;
@@ -109,8 +117,9 @@ export function parseTimelineJson(raw) {
     markDaysInRange(startMs, endMs, country);
   }
 
-  // Old-format activitySegment: { startLocation/endLocation: { latitudeE7, longitudeE7 }, duration: {...} }
+  // Old-format activitySegment: { startLocation/endLocation: { latitudeE7 }, duration: {...} }
   function processActivitySegment(obj) {
+    if (SKIP_ACTIVITY_TYPES.has(obj.activityType)) return;
     const startMs = parseMs(obj.duration?.startTimestampMs ?? obj.startTimestampMs ?? 0);
     const endMs = parseMs(obj.duration?.endTimestampMs ?? obj.endTimestampMs ?? 0);
     if (endMs < cutoff) return;
@@ -170,13 +179,14 @@ export function parseTimelineJson(raw) {
             markDaysInRange(segStartMs, segEndMs, country);
           }
         } else if (seg.visit.location) {
-          // Old-format visit nested inside semanticSegments
           processPlaceVisit({ ...seg.visit, duration: { startTimestampMs: segStartMs, endTimestampMs: segEndMs } });
         }
       }
 
-      // New-format activity: start.latLng / end.latLng "lat°, lon°"
+      // New-format activity: start.latLng / end.latLng — skip aerial transit
       if (seg.activity) {
+        const type = seg.activity.topCandidate?.type ?? '';
+        if (SKIP_ACTIVITY_TYPES.has(type)) continue;
         for (const endpoint of [seg.activity.start, seg.activity.end]) {
           if (!endpoint?.latLng) continue;
           const [lat, lon] = parseLatLng(endpoint.latLng);
@@ -202,25 +212,22 @@ export function parseTimelineJson(raw) {
     }
   }
 
-  // Build array of { date, countries[] } for the past 180 days
+  // Build full 2-year array so the frontend slider can explore any window.
   const days = [];
-  for (let i = 179; i >= 0; i--) {
-    const ts = now - i * 24 * 60 * 60 * 1000;
+  for (let i = 729; i >= 0; i--) {
+    const ts = now - i * DAY;
     const dateStr = toDateStr(ts);
     const countries = dayCountryMap[dateStr] ? [...dayCountryMap[dateStr]] : [];
     days.push({ date: dateStr, countries });
   }
 
-  // Aggregate per country
+  // Summary over the most recent 180 days (default window)
+  const recent = days.slice(days.length - 180);
   const countryTotals = {};
-  for (const { countries } of days) {
-    for (const c of countries) {
-      countryTotals[c] = (countryTotals[c] ?? 0) + 1;
-    }
+  for (const { countries } of recent) {
+    for (const c of countries) countryTotals[c] = (countryTotals[c] ?? 0) + 1;
   }
-
-  // Schengen total: any day with at least one Schengen country
-  const totalSchengenDays = days.filter(d => d.countries.length > 0).length;
+  const totalSchengenDays = recent.filter(d => d.countries.length > 0).length;
 
   return { days, countryTotals, totalSchengenDays };
 }
