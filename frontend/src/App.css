@@ -15,7 +15,6 @@
   justify-content: space-between;
   padding: 14px 28px;
   border-bottom: 1px solid var(--border);
-  background: var(--surface);
   position: sticky;
   top: 0;
   z-index: 20;
@@ -43,9 +42,7 @@
   flex-shrink: 0;
   margin: 0 1px;
 }
-.title-seg {
-  line-height: 1;
-}
+.title-seg { line-height: 1; }
 
 .theme-toggle {
   background: var(--surface2);
@@ -70,7 +67,6 @@
   z-index: 1;
 }
 
-/* Hero / upload */
 .hero {
   display: flex;
   flex-direction: column;
@@ -94,45 +90,19 @@
   line-height: 1.65;
 }
 
-.connect-or-upload {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  max-width: 480px;
-}
-
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  color: var(--text2);
-  font-size: 12px;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-.divider::before, .divider::after {
-  content: '';
-  flex: 1;
-  height: 1px;
-  background: var(--border);
-}
-
 .dropzone {
   border: 2px dashed var(--border);
   border-radius: 14px;
-  padding: 28px 32px;
+  padding: 32px 36px;
   width: 100%;
+  max-width: 480px;
   cursor: pointer;
   transition: border-color 0.2s, background 0.2s;
   background: color-mix(in srgb, var(--surface) 70%, transparent);
   backdrop-filter: blur(8px);
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 16px;
   text-align: left;
 }
 .dropzone:hover, .dropzone.dragging {
@@ -141,7 +111,7 @@
 }
 .dropzone-icon { color: var(--text2); flex-shrink: 0; }
 .dropzone-text { font-size: 14px; font-weight: 500; }
-.dropzone-hint { font-size: 12px; color: var(--text2); margin-top: 3px; }
+.dropzone-hint { font-size: 12px; color: var(--text2); margin-top: 4px; line-height: 1.5; }
 
 .loading-msg {
   display: flex;
@@ -174,39 +144,4 @@
   max-width: 480px;
   font-size: 14px;
   line-height: 1.5;
-}
-
-/* Polling state */
-.poll-status {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  background: color-mix(in srgb, var(--surface) 80%, transparent);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 40px 48px;
-  max-width: 440px;
-  width: 100%;
-}
-.poll-spinner {
-  width: 42px;
-  height: 42px;
-  border: 3px solid var(--border);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-.poll-label {
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
-  text-align: center;
-}
-.poll-hint {
-  font-size: 13px;
-  color: var(--text2);
-  text-align: center;
-  line-height: 1.6;
 }
