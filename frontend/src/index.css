@@ -14,12 +14,12 @@
 }
 
 [data-theme='dark'] {
-  --bg: #161b24;
-  --surface: #1e2535;
-  --surface2: #252d3d;
-  --border: #2d3850;
+  --bg: #1a1a1a;
+  --surface: #222222;
+  --surface2: #2c2c2c;
+  --border: rgba(232, 120, 32, 0.45);
   --text: #d8d8d8;
-  --text2: #8a8f9a;
+  --text2: #c8c8c8;
   --accent: #e87820;
   --accent2: #f08030;
   --accent3: #f09848;
