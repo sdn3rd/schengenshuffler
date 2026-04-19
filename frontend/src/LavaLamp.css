@@ -1,0 +1,88 @@
+.lava-wrap {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.lava-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  will-change: transform;
+  mix-blend-mode: screen;
+}
+
+[data-theme='dark'] .lava-orb {
+  mix-blend-mode: normal;
+}
+
+/* Each orb starts at a different position and floats on its own path */
+.o1 {
+  top: -15%;
+  left: -8%;
+  animation: drift1 32s ease-in-out infinite;
+}
+.o2 {
+  top: 50%;
+  right: -12%;
+  animation: drift2 28s ease-in-out infinite;
+}
+.o3 {
+  top: 30%;
+  left: 40%;
+  animation: drift3 38s ease-in-out infinite;
+}
+.o4 {
+  bottom: -5%;
+  left: 15%;
+  animation: drift4 24s ease-in-out infinite;
+}
+.o5 {
+  top: 10%;
+  right: 5%;
+  animation: drift5 35s ease-in-out infinite;
+}
+.o6 {
+  bottom: 20%;
+  right: 30%;
+  animation: drift6 30s ease-in-out infinite;
+}
+
+@keyframes drift1 {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(80px, 120px) scale(1.12); }
+  66%  { transform: translate(-40px, 60px) scale(0.95); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift2 {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(-100px, -80px) scale(1.08); }
+  66%  { transform: translate(-60px, 40px) scale(1.15); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift3 {
+  0%   { transform: translate(0, 0) scale(1); }
+  25%  { transform: translate(60px, -90px) scale(1.1); }
+  50%  { transform: translate(-80px, -40px) scale(0.9); }
+  75%  { transform: translate(40px, 80px) scale(1.05); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift4 {
+  0%   { transform: translate(0, 0) scale(1); }
+  50%  { transform: translate(120px, -100px) scale(1.2); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift5 {
+  0%   { transform: translate(0, 0) scale(1); }
+  33%  { transform: translate(-70px, 90px) scale(0.92); }
+  66%  { transform: translate(50px, 50px) scale(1.1); }
+  100% { transform: translate(0, 0) scale(1); }
+}
+@keyframes drift6 {
+  0%   { transform: translate(0, 0) scale(1); }
+  40%  { transform: translate(-90px, -70px) scale(1.15); }
+  80%  { transform: translate(60px, 30px) scale(0.88); }
+  100% { transform: translate(0, 0) scale(1); }
+}
