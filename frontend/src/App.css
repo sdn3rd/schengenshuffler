@@ -41,17 +41,17 @@
 }
 
 .theme-toggle {
-  background: var(--accent);
-  border: 1px solid var(--accent2);
+  background: transparent;
+  border: 1px solid var(--accent);
   border-radius: 8px;
   padding: 7px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--accent);
   transition: background 0.2s, color 0.2s;
 }
-.theme-toggle:hover { background: var(--accent2); }
+.theme-toggle:hover { background: rgba(200, 74, 0, 0.12); }
 
 .main {
   flex: 1;
