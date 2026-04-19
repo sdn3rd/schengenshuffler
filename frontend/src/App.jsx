@@ -5,7 +5,7 @@ import LavaLamp from './LavaLamp';
 import { SunIcon, MoonIcon, FileJsonIcon, AlertIcon } from './icons';
 import './App.css';
 
-const API = import.meta.env.VITE_API_URL ?? 'http://localhost:3001';
+const API = import.meta.env.VITE_API_URL ?? '';
 
 export default function App() {
   const [theme, setTheme] = useState(() =>
