@@ -60,34 +60,32 @@ function toDateStr(ms) {
   return `${d.getUTCFullYear()}-${String(d.getUTCMonth() + 1).padStart(2, '0')}-${String(d.getUTCDate()).padStart(2, '0')}`;
 }
 
-export function parseTimelineJson(raw) {
-  // Google Maps Timeline JSON can come in two shapes:
-  // 1. { timelineObjects: [...] }  (older export)
-  // 2. { semanticSegments: [...] } (newer "day-based" export)
-  // Also handle array of objects directly.
+// Handles "lat°, lon°" strings (new export) and plain "lat, lon"
+function parseLatLng(str) {
+  if (!str) return [NaN, NaN];
+  const parts = str.split(',');
+  return [parseFloat(parts[0]), parseFloat(parts[1])];
+}
 
+// Handles ISO-8601 strings and numeric ms values
+function parseMs(val) {
+  if (!val) return 0;
+  if (typeof val === 'number') return val;
+  const n = Number(val);
+  return isNaN(n) ? new Date(val).getTime() : n;
+}
+
+export function parseTimelineJson(raw) {
   const now = Date.now();
   const cutoff = now - 180 * 24 * 60 * 60 * 1000;
 
-  // Map: dateStr -> Set of country codes seen that day
   const dayCountryMap = {};
-
   function recordDay(dateStr, countryCode) {
     if (!dayCountryMap[dateStr]) dayCountryMap[dateStr] = new Set();
     dayCountryMap[dateStr].add(countryCode);
   }
 
-  function processPlaceVisit(obj) {
-    const loc = obj.location;
-    if (!loc) return;
-    const startMs = Number(obj.duration?.startTimestampMs ?? obj.startTimestampMs ?? 0);
-    const endMs = Number(obj.duration?.endTimestampMs ?? obj.endTimestampMs ?? 0);
-    if (endMs < cutoff) return;
-    const lat = (loc.latitudeE7 ?? 0) / 1e7;
-    const lon = (loc.longitudeE7 ?? 0) / 1e7;
-    const country = coordToCountry(lat, lon);
-    if (!country || !SCHENGEN_COUNTRIES.has(country)) return;
-    // mark every calendar day touched
+  function markDaysInRange(startMs, endMs, country) {
     const start = Math.max(startMs, cutoff);
     let cursor = start;
     while (cursor <= endMs) {
@@ -97,14 +95,26 @@ export function parseTimelineJson(raw) {
     recordDay(toDateStr(endMs), country);
   }
 
-  function processActivitySegment(obj) {
-    // For transit segments we just use start/end coords and duration
-    const startMs = Number(obj.duration?.startTimestampMs ?? obj.startTimestampMs ?? 0);
-    const endMs = Number(obj.duration?.endTimestampMs ?? obj.endTimestampMs ?? 0);
+  // Old-format placeVisit: { location: { latitudeE7, longitudeE7 }, duration: { startTimestampMs, endTimestampMs } }
+  function processPlaceVisit(obj) {
+    const loc = obj.location;
+    if (!loc) return;
+    const startMs = parseMs(obj.duration?.startTimestampMs ?? obj.startTimestampMs ?? 0);
+    const endMs = parseMs(obj.duration?.endTimestampMs ?? obj.endTimestampMs ?? 0);
     if (endMs < cutoff) return;
-    const sp = obj.startLocation;
-    const ep = obj.endLocation;
-    for (const loc of [sp, ep]) {
+    const lat = (loc.latitudeE7 ?? 0) / 1e7;
+    const lon = (loc.longitudeE7 ?? 0) / 1e7;
+    const country = coordToCountry(lat, lon);
+    if (!country || !SCHENGEN_COUNTRIES.has(country)) return;
+    markDaysInRange(startMs, endMs, country);
+  }
+
+  // Old-format activitySegment: { startLocation/endLocation: { latitudeE7, longitudeE7 }, duration: {...} }
+  function processActivitySegment(obj) {
+    const startMs = parseMs(obj.duration?.startTimestampMs ?? obj.startTimestampMs ?? 0);
+    const endMs = parseMs(obj.duration?.endTimestampMs ?? obj.endTimestampMs ?? 0);
+    if (endMs < cutoff) return;
+    for (const loc of [obj.startLocation, obj.endLocation]) {
       if (!loc) continue;
       const lat = (loc.latitudeE7 ?? 0) / 1e7;
       const lon = (loc.longitudeE7 ?? 0) / 1e7;
@@ -122,10 +132,9 @@ export function parseTimelineJson(raw) {
     }
   }
 
-  // Raw locations array (older formats)
   function processLocations(locations) {
     for (const loc of locations) {
-      const ts = Number(loc.timestampMs ?? 0);
+      const ts = parseMs(loc.timestampMs ?? 0);
       if (ts < cutoff) continue;
       const lat = (loc.latitudeE7 ?? 0) / 1e7;
       const lon = (loc.longitudeE7 ?? 0) / 1e7;
@@ -136,7 +145,6 @@ export function parseTimelineJson(raw) {
   }
 
   if (Array.isArray(raw)) {
-    // Could be array of timeline objects or locations
     if (raw[0]?.placeVisit || raw[0]?.activitySegment) {
       processTimelineObjects(raw);
     } else {
@@ -148,12 +156,44 @@ export function parseTimelineJson(raw) {
     processLocations(raw.locations);
   } else if (raw.semanticSegments) {
     for (const seg of raw.semanticSegments) {
-      if (seg.visit) processPlaceVisit(seg.visit);
+      const segStartMs = parseMs(seg.startTime);
+      const segEndMs = parseMs(seg.endTime);
+      if (segEndMs < cutoff) continue;
+
+      // New-format visit: topCandidate.placeLocation.latLng "lat°, lon°"
+      if (seg.visit) {
+        const latLng = seg.visit.topCandidate?.placeLocation?.latLng;
+        if (latLng) {
+          const [lat, lon] = parseLatLng(latLng);
+          const country = coordToCountry(lat, lon);
+          if (country && SCHENGEN_COUNTRIES.has(country)) {
+            markDaysInRange(segStartMs, segEndMs, country);
+          }
+        } else if (seg.visit.location) {
+          // Old-format visit nested inside semanticSegments
+          processPlaceVisit({ ...seg.visit, duration: { startTimestampMs: segStartMs, endTimestampMs: segEndMs } });
+        }
+      }
+
+      // New-format activity: start.latLng / end.latLng "lat°, lon°"
+      if (seg.activity) {
+        for (const endpoint of [seg.activity.start, seg.activity.end]) {
+          if (!endpoint?.latLng) continue;
+          const [lat, lon] = parseLatLng(endpoint.latLng);
+          const country = coordToCountry(lat, lon);
+          if (!country || !SCHENGEN_COUNTRIES.has(country)) continue;
+          recordDay(toDateStr(segStartMs), country);
+          recordDay(toDateStr(segEndMs), country);
+        }
+      }
+
+      // timelinePath: { point: "lat°, lon°", time: ISO-string }
       if (seg.timelinePath) {
         for (const pt of seg.timelinePath) {
-          const ts = new Date(pt.time).getTime();
+          const ts = parseMs(pt.time);
           if (ts < cutoff) continue;
-          const [lat, lon] = pt.point.split(',').map(Number);
+          const [lat, lon] = parseLatLng(pt.point);
+          if (isNaN(lat) || isNaN(lon)) continue;
           const country = coordToCountry(lat, lon);
           if (!country || !SCHENGEN_COUNTRIES.has(country)) continue;
           recordDay(toDateStr(ts), country);
