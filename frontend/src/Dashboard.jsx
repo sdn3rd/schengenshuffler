@@ -12,18 +12,18 @@ const COUNTRY_NAMES = {
   SE: 'Sweden', CH: 'Switzerland',
 };
 
-// 10 distinguishable grey shades — dark to light
+// Dark blues to mid blues — distinct and readable on light bg
 const PALETTE = [
-  '#111111',
-  '#252525',
-  '#383838',
-  '#4c4c4c',
-  '#5f5f5f',
-  '#737373',
-  '#878787',
-  '#9b9b9b',
-  '#b0b0b0',
-  '#c5c5c5',
+  '#0d2137',
+  '#1e3a5f',
+  '#1d4ed8',
+  '#2563eb',
+  '#3b82f6',
+  '#1a3a6e',
+  '#0f4c8a',
+  '#2d6aad',
+  '#4a8fd0',
+  '#6aaee8',
 ];
 
 function formatDate(dateStr) {
@@ -35,7 +35,7 @@ function formatDate(dateStr) {
 
 function StatusBar({ total }) {
   const pct = Math.min((total / 90) * 100, 100);
-  const color = total >= 90 ? '#1a1a1a' : total >= 75 ? '#4a4a4a' : '#7a7a7a';
+  const color = total >= 90 ? '#0d2137' : total >= 75 ? '#1d4ed8' : '#888888';
   const label = total >= 90
     ? 'Limit reached'
     : total >= 75
@@ -78,7 +78,7 @@ export default function Dashboard({ data, onReset }) {
         code,
         name: COUNTRY_NAMES[code] ?? code,
         count,
-        color: colorMap[code] ?? '#5f5f5f',
+        color: colorMap[code] ?? '#2563eb',
       })),
     [countryTotals, colorMap]
   );
@@ -121,7 +121,7 @@ export default function Dashboard({ data, onReset }) {
               {row.map((day) => {
                 const primary = day.countries[0];
                 const bg = primary
-                  ? (colorMap[primary] ?? '#5f5f5f')
+                  ? (colorMap[primary] ?? '#2563eb')
                   : 'var(--surface2)';
                 const multi = day.countries.length > 1;
                 return (
@@ -139,7 +139,7 @@ export default function Dashboard({ data, onReset }) {
                     {multi && (
                       <div
                         className="grid-cell-stripe"
-                        style={{ background: colorMap[day.countries[1]] ?? '#5f5f5f' }}
+                        style={{ background: colorMap[day.countries[1]] ?? '#2563eb' }}
                       />
                     )}
                   </div>
