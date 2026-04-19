@@ -5,24 +5,24 @@
   --border: #515151;
   --text: #0f0f0f;
   --text2: #222222;
-  --accent: #1d4ed8;
-  --accent2: #2563eb;
-  --accent3: #3b82f6;
+  --accent: #3a3a3a;
+  --accent2: #4d4d4d;
+  --accent3: #606060;
   --radius: 10px;
   font: 15px/1.5 system-ui, 'Segoe UI', sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
 [data-theme='dark'] {
-  --bg: #070d17;
-  --surface: #0f1c2e;
-  --surface2: #162236;
-  --border: #1e3350;
-  --text: #e2eaf5;
-  --text2: #6e8faf;
-  --accent: #3b82f6;
-  --accent2: #60a5fa;
-  --accent3: #93c5fd;
+  --bg: #111111;
+  --surface: #1e1e1e;
+  --surface2: #2a2a2a;
+  --border: #383838;
+  --text: #e8e8e8;
+  --text2: #909090;
+  --accent: #888888;
+  --accent2: #9e9e9e;
+  --accent3: #b4b4b4;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }

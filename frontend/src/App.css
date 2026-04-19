@@ -106,7 +106,7 @@
   text-align: left;
 }
 .dropzone:hover, .dropzone.dragging {
-  border-color: var(--accent);
+  border-color: var(--text2);
   background: color-mix(in srgb, var(--surface2) 80%, transparent);
 }
 .dropzone-icon { color: var(--text2); flex-shrink: 0; }
@@ -117,7 +117,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: var(--accent2);
+  color: var(--text);
   font-weight: 500;
   font-size: 14px;
 }
@@ -125,7 +125,7 @@
   width: 16px;
   height: 16px;
   border: 2px solid var(--border);
-  border-top-color: var(--accent2);
+  border-top-color: var(--text);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -135,9 +135,9 @@
   display: flex;
   align-items: flex-start;
   gap: 8px;
-  color: #60a5fa;
-  background: rgba(29, 78, 216, 0.1);
-  border: 1px solid rgba(59, 130, 246, 0.3);
+  color: var(--text);
+  background: rgba(0, 0, 0, 0.15);
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 12px 16px;
   width: 100%;

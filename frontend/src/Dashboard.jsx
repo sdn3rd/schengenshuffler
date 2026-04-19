@@ -12,18 +12,18 @@ const COUNTRY_NAMES = {
   SE: 'Sweden', CH: 'Switzerland',
 };
 
-// Blues + greys palette — no purple
+// 10 distinguishable grey shades — dark to light
 const PALETTE = [
-  '#1d4ed8', // blue-700
-  '#0ea5e9', // sky-500
-  '#64748b', // slate-500
-  '#0284c7', // sky-600
-  '#334155', // slate-700
-  '#38bdf8', // sky-400
-  '#475569', // slate-600
-  '#2563eb', // blue-600
-  '#94a3b8', // slate-400
-  '#0369a1', // sky-700
+  '#111111',
+  '#252525',
+  '#383838',
+  '#4c4c4c',
+  '#5f5f5f',
+  '#737373',
+  '#878787',
+  '#9b9b9b',
+  '#b0b0b0',
+  '#c5c5c5',
 ];
 
 function formatDate(dateStr) {
@@ -35,7 +35,7 @@ function formatDate(dateStr) {
 
 function StatusBar({ total }) {
   const pct = Math.min((total / 90) * 100, 100);
-  const color = total >= 90 ? '#ef4444' : total >= 75 ? '#f59e0b' : '#22c55e';
+  const color = total >= 90 ? '#1a1a1a' : total >= 75 ? '#4a4a4a' : '#7a7a7a';
   const label = total >= 90
     ? 'Limit reached'
     : total >= 75
@@ -78,7 +78,7 @@ export default function Dashboard({ data, onReset }) {
         code,
         name: COUNTRY_NAMES[code] ?? code,
         count,
-        color: colorMap[code] ?? '#64748b',
+        color: colorMap[code] ?? '#5f5f5f',
       })),
     [countryTotals, colorMap]
   );
@@ -121,7 +121,7 @@ export default function Dashboard({ data, onReset }) {
               {row.map((day) => {
                 const primary = day.countries[0];
                 const bg = primary
-                  ? (colorMap[primary] ?? '#64748b')
+                  ? (colorMap[primary] ?? '#5f5f5f')
                   : 'var(--surface2)';
                 const multi = day.countries.length > 1;
                 return (
@@ -139,7 +139,7 @@ export default function Dashboard({ data, onReset }) {
                     {multi && (
                       <div
                         className="grid-cell-stripe"
-                        style={{ background: colorMap[day.countries[1]] ?? '#64748b' }}
+                        style={{ background: colorMap[day.countries[1]] ?? '#5f5f5f' }}
                       />
                     )}
                   </div>
