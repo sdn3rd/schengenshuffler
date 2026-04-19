@@ -43,7 +43,7 @@ export default function App() {
       <header className="header">
         <div className="header-left">
           <Bolt size={16} className="title-bolt" />
-          <span className="app-title">SchenGen</span>
+          <span className="app-title">Schengenerator</span>
         </div>
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}
@@ -53,7 +53,7 @@ export default function App() {
       <main className="main">
         {!result && (
           <section className="hero">
-            <h1 className="hero-title">SchenGen</h1>
+            <h1 className="hero-title">Schengenerator</h1>
             <p className="catchphrase">Know your count.</p>
 
             <div

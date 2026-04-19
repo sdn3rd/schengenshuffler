@@ -1,6 +1,6 @@
 {
-  "name": "schengenshuffler",
-  "version": "0.6.0",
+  "name": "schengenerator",
+  "version": "0.7.0",
   "private": true,
   "scripts": {
     "dev:backend": "npm --prefix backend run dev",
