@@ -1,6 +1,7 @@
 name = "schengenerator"
 main = "worker/index.js"
 compatibility_date = "2025-01-01"
+account_id = "1958a44c637f9061a6cf574141164146"
 
 [assets]
 directory = "./frontend/dist"
