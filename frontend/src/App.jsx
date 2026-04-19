@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import DiceLogo from './DiceLogo';
+import { Bolt } from './DiceLogo';
 import Dashboard from './Dashboard';
 import GoogleConnect from './GoogleConnect';
 import LavaLamp from './LavaLamp';
@@ -85,8 +85,12 @@ export default function App() {
 
       <header className="header">
         <div className="header-left">
-          <DiceLogo size={36} />
-          <span className="app-title">SchengenShuffler</span>
+          <span className="app-title">
+            <Bolt size={15} className="title-bolt" />
+            <span className="title-seg">chengen</span>
+            <Bolt size={15} className="title-bolt" />
+            <span className="title-seg">huffler</span>
+          </span>
         </div>
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? <SunIcon size={18} /> : <MoonIcon size={18} />}

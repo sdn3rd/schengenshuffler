@@ -30,13 +30,21 @@
 }
 
 .app-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 1px;
   font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.3px;
-  background: linear-gradient(135deg, var(--accent), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--text);
+}
+.title-bolt {
+  color: var(--text);
+  flex-shrink: 0;
+  margin: 0 1px;
+}
+.title-seg {
+  line-height: 1;
 }
 
 .theme-toggle {
