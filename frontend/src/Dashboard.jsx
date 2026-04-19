@@ -12,18 +12,17 @@ const COUNTRY_NAMES = {
   SE: 'Sweden', CH: 'Switzerland',
 };
 
-// Deep navy to dark blue — readable on both light and dark bg
 const PALETTE = [
-  '#060f20',
-  '#0d1f3c',
-  '#0f2e58',
-  '#103a74',
-  '#0e4490',
-  '#1050a8',
-  '#1560c0',
-  '#1a70d8',
-  '#2080e8',
-  '#2a8ff0',
+  '#7a1500',
+  '#a02000',
+  '#c23000',
+  '#c84a00',
+  '#d85a00',
+  '#e06000',
+  '#e87820',
+  '#f07820',
+  '#c87030',
+  '#a05820',
 ];
 
 function formatDate(dateStr) {
@@ -35,7 +34,7 @@ function formatDate(dateStr) {
 
 function StatusBar({ total }) {
   const pct = Math.min((total / 90) * 100, 100);
-  const color = total >= 90 ? '#060f20' : total >= 75 ? '#103a74' : '#888888';
+  const color = total >= 90 ? '#7a1500' : total >= 75 ? '#c84a00' : '#888888';
   const label = total >= 90
     ? 'Limit reached'
     : total >= 75
@@ -78,7 +77,7 @@ export default function Dashboard({ data, onReset }) {
         code,
         name: COUNTRY_NAMES[code] ?? code,
         count,
-        color: colorMap[code] ?? '#103a74',
+        color: colorMap[code] ?? '#c84a00',
       })),
     [countryTotals, colorMap]
   );
@@ -121,7 +120,7 @@ export default function Dashboard({ data, onReset }) {
               {row.map((day) => {
                 const primary = day.countries[0];
                 const bg = primary
-                  ? (colorMap[primary] ?? '#103a74')
+                  ? (colorMap[primary] ?? '#c84a00')
                   : 'var(--surface2)';
                 const multi = day.countries.length > 1;
                 return (
@@ -139,7 +138,7 @@ export default function Dashboard({ data, onReset }) {
                     {multi && (
                       <div
                         className="grid-cell-stripe"
-                        style={{ background: colorMap[day.countries[1]] ?? '#103a74' }}
+                        style={{ background: colorMap[day.countries[1]] ?? '#c84a00' }}
                       />
                     )}
                   </div>

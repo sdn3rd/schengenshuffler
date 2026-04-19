@@ -11,12 +11,28 @@
   border-radius: 50%;
   filter: blur(90px);
   will-change: transform;
-  mix-blend-mode: screen;
+  mix-blend-mode: multiply;
 }
 
 [data-theme='dark'] .lava-orb {
-  mix-blend-mode: normal;
+  mix-blend-mode: screen;
 }
+
+/* Light mode orb colors — warm oranges + amber + grey */
+.o1 { background: rgba(200, 74, 0, 0.38); }
+.o2 { background: rgba(224, 96, 0, 0.28); }
+.o3 { background: rgba(240, 140, 30, 0.32); }
+.o4 { background: rgba(160, 60, 0, 0.22); }
+.o5 { background: rgba(140, 140, 140, 0.22); }
+.o6 { background: rgba(200, 160, 80, 0.28); }
+
+/* Dark mode orb colors — deep navy blues */
+[data-theme='dark'] .o1 { background: rgba(16, 50, 100, 0.55); }
+[data-theme='dark'] .o2 { background: rgba(8, 30, 72, 0.45); }
+[data-theme='dark'] .o3 { background: rgba(20, 64, 130, 0.50); }
+[data-theme='dark'] .o4 { background: rgba(6, 22, 58, 0.40); }
+[data-theme='dark'] .o5 { background: rgba(14, 45, 95, 0.48); }
+[data-theme='dark'] .o6 { background: rgba(4, 18, 52, 0.35); }
 
 /* Each orb starts at a different position and floats on its own path */
 .o1 {
